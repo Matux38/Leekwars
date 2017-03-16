@@ -1,0 +1,77 @@
+include("Cellules Accessibles");
+
+function getCellsToArmFromCells(arm, cells, enemy) {
+	var cibles = getCellsToTouchEnemy(arm, enemy);
+	var w;
+	var tab = [];
+	if (isWeapon(arm)) {
+		w = true;
+	} else {
+		w = false;
+	}
+	for (var i in cells) {
+		for (var j in cibles) {
+			if (w) {
+				if (getWeaponEffectiveArea(arm, i, j)) {
+					var tab2 = [arm, i, j];
+					push(tab, tab2);
+				}
+			} else {
+				if (getChipEffectiveArea(arm, i, j)) {
+					var tab2 = [arm, i, j];
+					push(tab, tab2);
+				}
+			}
+		}
+	}
+	return tab;
+}
+
+function getCellsToTouchEnemy(arme, leek) {
+	var w;
+	var area;
+	if (isWeapon(arme)) {
+		w = true;
+		area = getWeaponArea(arme);
+	} else {
+		w = false;
+		area = getChipArea(arme);
+	}
+	
+	if (area == AREA_POINT) {
+		return [getCell(leek)];
+	} else if (area == AREA_CIRCLE_1) {
+		return getCellsAccessibles(getCell(leek), 1);
+	} else if (area == AREA_CIRCLE_2) {
+		return getCellsAccessibles(getCell(leek), 2);
+	} else if (area == AREA_CIRCLE_3) {
+		return getCellsAccessibles(getCell(leek), 3);
+	} else if (area == AREA_LASER_LINE) {
+		var x = getCellX(getCell(leek));
+		var y = getCellY(getCell(leek));
+		var minRange, maxRange;
+		if (w) {
+			minRange = getWeaponMinRange(arme);
+			maxRange = getWeaponMaxRange(arme);
+		} else {
+			minRange = getChipMinRange(arme);
+			maxRange = getChipMaxRange(arme);
+		}
+		var tab = [getCell(leek)];
+		var k = 1;
+		for (var a = x-maxRange; a<=x+maxRange; a++) {
+			if (a<= x-minRange or a>=x+minRange) {
+				tab[k] = getCellFromXY(a, y);
+				k++;
+			}
+		}
+		for (var b = y-maxRange; b<=y+maxRange; b++) {
+			if (b<= y-minRange or b>=y+minRange) {
+				tab[k] = getCellFromXY(x, b);
+				k++;
+			}
+		}
+		mark(tab);
+		return tab;
+	}
+}

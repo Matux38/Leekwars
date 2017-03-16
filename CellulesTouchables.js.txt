@@ -1,0 +1,55 @@
+include("Cellules Accessibles");
+
+function getCellsTouchables(arme, cell) {
+	debug("PLUGIN CELLULES TOUCHABLES");
+	if (cell == null) {
+		return [];
+	} else {
+		var w;
+		var area;
+		if (isWeapon(arme)) {
+			w = true;
+			area = getWeaponArea(arme);
+		} else {
+			w = false;
+			area = getChipArea(arme);
+		}
+
+		if (area == AREA_POINT) {
+			return [cell];
+		} else if (area == AREA_CIRCLE_1) {
+			return getCellsAccessibles(cell, 1);
+		} else if (area == AREA_CIRCLE_2) {
+			return getCellsAccessibles(cell, 2);
+		} else if (area == AREA_CIRCLE_3) {
+			return getCellsAccessibles(cell, 3);
+		} else if (area == AREA_LASER_LINE) {
+			var x = getCellX(cell);
+			var y = getCellY(cell);
+			var minRange, maxRange;
+			if (w) {
+				minRange = getWeaponMinRange(arme);
+				maxRange = getWeaponMaxRange(arme);
+			} else {
+				minRange = getChipMinRange(arme);
+				maxRange = getChipMaxRange(arme);
+			}
+			var tab = [cell];
+			var k = 1;
+			for (var a = x-maxRange; a<=x+maxRange; a++) {
+				if (a<= x-minRange or a>=x+minRange) {
+					tab[k] = getCellFromXY(a, y);
+					k++;
+				}
+			}
+			for (var b = y-maxRange; b<=y+maxRange; b++) {
+				if (b<= y-minRange or b>=y+minRange) {
+					tab[k] = getCellFromXY(x, b);
+					k++;
+				}
+			}
+			debug("CELLULES TOUCHABLES = " + tab);
+			return tab;
+		}
+	}
+}

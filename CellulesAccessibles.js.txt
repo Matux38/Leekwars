@@ -1,0 +1,25 @@
+//POSSIBLE MOVES
+function getCellsAccessibles(cell, MP)
+{
+	//debug("PLUGIN CELL ACCESS");
+	var possibleMoves = []; push(possibleMoves, cell);
+	var k = 0; 
+	var toTest = []; 
+	for(var i = 0; i < MP; i++){	
+		toTest = []; 
+		while(k < count(possibleMoves)){ 
+			var theX = getCellX(possibleMoves[k]); 
+			var theY = getCellY(possibleMoves[k]); 
+			toTest = toTest + [getCellFromXY(theX+1, theY), getCellFromXY(theX-1, theY),getCellFromXY(theX, theY+1), getCellFromXY(theX, theY-1)]; 
+			k++; 
+			} 
+			for(var case in toTest){ 
+				if(case != null and !inArray(possibleMoves, case) and getCellContent(case) == 0 and getPathLength(cell, case) <= MP){
+				push(possibleMoves, case);
+				}
+			} 
+//			debug(getOperations()); mark(possibleMoves, COLOR_RED);	
+	}
+	//debug("POSSIBLE MOVES = " + possibleMoves);
+	return possibleMoves;
+}
